@@ -11,6 +11,7 @@ import {
 } from "@repo/ui/components/breadcrumb";
 import { SidebarTrigger, useSidebar } from "@repo/ui/components/sidebar";
 import { IconTooltipButton } from "@/components/icon-tooltip-button";
+import { getProjectInitials } from "@/lib/get-project-initials";
 
 // Right-side view toggles. UI only for now, wired up in the next phase.
 const HEADER_ACTIONS = [
@@ -18,15 +19,6 @@ const HEADER_ACTIONS = [
   { label: "Toggle terminal", icon: PanelBottom },
   { label: "Toggle side panel", icon: PanelRight },
 ];
-
-// Two-letter initials for the project avatar (e.g. "ai-teams" -> "AT").
-const getProjectInitials = (project: string) =>
-  project
-    .split(/[-_\s]+/)
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((part) => part[0]?.toUpperCase())
-    .join("");
 
 /**
  * @component SessionHeader

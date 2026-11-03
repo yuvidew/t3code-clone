@@ -6,7 +6,6 @@ import {
   ChevronRight,
   FolderPlus,
   GitBranch,
-  ListFilter,
   RefreshCw,
   Search,
   Settings,
@@ -20,14 +19,15 @@ import {
   SidebarHeader,
   SidebarTrigger,
 } from "@repo/ui/components/sidebar";
+import { ScrollArea } from "@repo/ui/components/scroll-area";
 import { InputGroup, InputGroupAddon, InputGroupInput } from "@repo/ui/components/input-group";
 import { IconTooltipButton } from "@/components/icon-tooltip-button";
 import { SessionList } from "@/features/sessions/_components/session-list";
-import { MOCK_SESSIONS } from "@/features/sessions/data";
+import { ProjectFilter } from "@/features/sessions/_components/project-filter";
+import { ALL_PROJECTS, MOCK_SESSIONS, NO_PROJECT } from "@/features/sessions/data";
 
 // Actions shown next to the search bar. UI only for now, wired up in the next phase.
 const SEARCH_ACTIONS = [
-  { label: "Filter", icon: ListFilter },
   { label: "Add project", icon: FolderPlus },
   { label: "New session", icon: SquarePen },
 ];
@@ -45,14 +45,20 @@ const FOOTER_ACTIONS = [
  */
 export const AppSidebar = () => {
   const [query, setQuery] = useState("");
+  // Selected project filter (all projects by default).
+  const [project, setProject] = useState(ALL_PROJECTS);
 
-  // Sessions matching the search text (title or project).
+  // Sessions in the selected project that also match the search text (title or project).
   const sessions = useMemo(() => {
     const q = query.trim().toLowerCase();
-    return MOCK_SESSIONS.filter(
-      (s) => !q || s.title.toLowerCase().includes(q) || s.project.toLowerCase().includes(q),
-    );
-  }, [query]);
+    return MOCK_SESSIONS.filter((s) => {
+      const inProject =
+        project === ALL_PROJECTS || (project === NO_PROJECT ? s.project === null : s.project === project);
+      const matches =
+        !q || s.title.toLowerCase().includes(q) || (s.project ?? "").toLowerCase().includes(q);
+      return inProject && matches;
+    });
+  }, [query, project]);
 
   const settledCount = MOCK_SESSIONS.filter((s) => s.status === "settled").length;
 
@@ -77,6 +83,7 @@ export const AppSidebar = () => {
               aria-label="Search sessions"
             />
           </InputGroup>
+          <ProjectFilter value={project} onChange={setProject} />
           {SEARCH_ACTIONS.map(({ label, icon: Icon }) => (
             <IconTooltipButton key={label} label={label}>
               <Icon />
@@ -85,10 +92,13 @@ export const AppSidebar = () => {
         </div>
       </SidebarHeader>
 
-      <SidebarContent>
-        <SidebarGroup>
-          <SessionList sessions={sessions} />
-        </SidebarGroup>
+      {/* ScrollArea owns the scrolling so the session list gets a themed scrollbar; the block override stops Radix's table wrapper from breaking text truncation. */}
+      <SidebarContent className="overflow-hidden">
+        <ScrollArea className="min-h-0 flex-1 [&_[data-radix-scroll-area-viewport]>div]:block!">
+          <SidebarGroup>
+            <SessionList sessions={sessions} />
+          </SidebarGroup>
+        </ScrollArea>
       </SidebarContent>
 
       <SidebarFooter className="gap-3">

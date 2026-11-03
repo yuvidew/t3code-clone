@@ -25,7 +25,7 @@ export const SessionList = ({ sessions }: { sessions: Session[] }) => {
         <SidebarMenuItem key={session.id}>
           <SidebarMenuButton className="h-auto flex-col items-stretch gap-0.5 py-2">
             <span className="flex items-center justify-between text-xs text-muted-foreground">
-              <span className="truncate">{session.project}</span>
+              <span className="truncate">{session.project ?? "No project"}</span>
               <span>{session.age}</span>
             </span>
             <span className="flex items-center justify-between gap-2">
