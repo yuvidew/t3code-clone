@@ -1,0 +1,5 @@
+{
+  "extends": "@repo/tsconfig/react-library.json",
+  "compilerOptions": { "paths": { "@repo/ui/*": ["./src/*"] } },
+  "include": ["src"]
+}
