@@ -6,7 +6,12 @@ import { DirectionProvider } from "@repo/ui/components/direction";
 import { Toaster } from "@repo/ui/components/sonner";
 import { TooltipProvider } from "@repo/ui/components/tooltip";
 
-export function Providers({ children }: { children: ReactNode }) {
+/**
+ * @component Providers
+ * @description Mounts the single QueryClient plus theme, direction, tooltip and toast providers for the whole app.
+ */
+export const Providers = ({ children }: { children: ReactNode }) => {
+  // One QueryClient per browser session, created lazily so it survives re-renders.
   const [client] = useState(() => new QueryClient());
   return (
     <QueryClientProvider client={client}>
@@ -25,4 +30,4 @@ export function Providers({ children }: { children: ReactNode }) {
       </ThemeProvider>
     </QueryClientProvider>
   );
-}
+};
