@@ -1,34 +1,20 @@
 "use client";
 
 import type { ReactNode } from "react";
-import {
-  SidebarInset,
-  SidebarProvider,
-  SidebarTrigger,
-  useSidebar,
-} from "@repo/ui/components/sidebar";
+import { SidebarInset, SidebarProvider } from "@repo/ui/components/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
-
-// Shows a trigger in the main area only while the sidebar is closed, so it can be reopened.
-const ReopenTrigger = () => {
-  const { open, isMobile } = useSidebar();
-  if (open && !isMobile) return null;
-  return (
-    <header className="flex h-12 items-center px-2">
-      <SidebarTrigger />
-    </header>
-  );
-};
+import { SessionHeader } from "@/features/sessions/_components/session-header";
 
 /**
  * @component AppShell
- * @description Wraps pages with the sidebar provider, the sidebar, and the main inset area.
+ * @description Wraps pages with the sidebar provider, the sidebar, and the main area with its session header.
  */
 export const AppShell = ({ children }: { children: ReactNode }) => (
   <SidebarProvider>
     <AppSidebar />
     <SidebarInset>
-      <ReopenTrigger />
+      {/* Placeholder project/session until sessions are routable. */}
+      <SessionHeader project="tscode-clone" title="New thread" />
       {children}
     </SidebarInset>
   </SidebarProvider>
